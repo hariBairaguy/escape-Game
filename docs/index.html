@@ -4,15 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Escape Game - Devinettes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: system-ui, sans-serif;
-      background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat black;
+      font-family: 'Lobster', cursive, system-ui, sans-serif;
       color: white;
       overflow-x: hidden;
       font-size: 16px;
+      transition: background 0.5s ease-in-out;
     }
+
+    .theme-classic {
+      background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat black;
+    }
+
+    .theme-disney {
+      background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat rgb(64, 2, 100);
+    }
+
     .screen {
       min-height: 100vh;
       display: none;
@@ -24,18 +34,22 @@
       margin: auto;
       text-align: center;
     }
+
     .active {
-      display: flex;
+      display: flex !important;
     }
+
     h1 {
       font-size: clamp(24px, 6vw, 36px);
       margin-bottom: 1em;
     }
+
     p, select {
       max-width: 90%;
       font-size: clamp(14px, 4.5vw, 20px);
       margin-bottom: 1.5em;
     }
+
     button, input, select {
       font-size: clamp(16px, 4.5vw, 22px);
       padding: 0.6em 1.2em;
@@ -44,14 +58,7 @@
       cursor: pointer;
       margin: 0.5em;
     }
-    #lives {
-      font-size: clamp(20px, 6vw, 30px);
-      margin-bottom: 10px;
-    }
-    #timer {
-      margin-bottom: 1em;
-      font-weight: bold;
-    }
+
     .step-image {
       width: 80%;
       max-width: 150px;
@@ -60,19 +67,18 @@
       margin-bottom: 1em;
       object-fit: cover;
     }
-    #message {
-      margin-top: 1em;
-      font-weight: bold;
-    }
+
     .key {
       width: 60px;
       display: none;
       margin-top: 10px;
       animation: fadeIn 1s ease;
     }
+
     .show {
       display: inline-block !important;
     }
+
     #darkness {
       position: fixed;
       top: 0; left: 0;
@@ -83,35 +89,49 @@
       transition: background 0.2s ease-out;
       z-index: 5;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.5); }
       to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
-<body>
+<body class="theme-classic">
 
+<!-- Écran de sélection -->
 <div id="menu" class="screen active">
-  <h1>Choisis une option</h1>
-  <select id="choice">
-    <option value="1">1 - Devinettes classiques</option>
-    <option value="2">2 - Autre option</option>
-  </select>
+    <h1>🔐 Bienvenue dans l’Escape Game Virtuel</h1>
+    <p>
+        Tu es enfermé dans un univers mystérieux, plongé dans l’obscurité... Seule une lampe torche suit tes mouvements 🕯️.<br><br>
+        Pour t’en échapper, tu devras résoudre
+      <strong>3 énigmes</strong> choisies au hasard.<br><br>
+      Seras-tu assez rapide et malin pour retrouver la liberté avant la fin du temps imparti ? 🕒
+    </p>
+    <p>
+      Choisis ton aventure :
+    </p>
+    <select id="choice">
+      <option value="1">🧠 Devinettes classiques (logique & réflexion)</option>
+      <option value="2">✨ Devinettes Disney (magie & souvenirs d’enfance)</option>
+    </select>
   <button onclick="handleSelection()">Valider</button>
 </div>
 
+<!-- Intro classique -->
 <div id="intro" class="screen">
   <h1>Évasion Nocturne</h1>
   <p>Tu te réveilles dans une pièce obscure. Trois énigmes aléatoires gardent la sortie. Tu as 10 minutes pour t’échapper...</p>
   <button onclick="startGame()">Commencer</button>
 </div>
 
-<div id="bien" class="screen">
-  <h1>bien</h1>
+<!-- Intro Disney -->
+<div id="introDisney" class="screen">
+  <h1>✨ L'Évasion Enchantée ✨</h1>
+  <p>Bienvenue dans un monde féerique... Trois énigmes Disney protègent la sortie ! Tu as 10 minutes pour t’échapper du royaume enchanté !</p>
+  <button onclick="startGameDisney()">🌟 Commencer l'aventure</button>
 </div>
 
-<div id="darkness"></div>
-
+<!-- Jeu classique -->
 <div id="game" class="screen">
   <h2>Escape Game : Devinettes</h2>
   <div id="lives">❤️❤️❤️</div>
@@ -124,43 +144,29 @@
   <img id="keyImage" class="key" src="https://cdn-icons-png.flaticon.com/512/2721/2721260.png" alt="Clé">
 </div>
 
+<!-- Jeu Disney -->
+<div id="gameDisney" class="screen">
+  <h2>Escape Game : Devinettes Disney</h2>
+  <div id="livesDisney">❤️❤️❤️</div>
+  <div id="timerDisney">⏱️ Temps restant : 10:00</div>
+  <img id="stepImageDisney" class="step-image" src="" alt="Image énigme">
+  <div id="stepTextDisney"></div>
+  <input type="text" id="answerInputDisney" placeholder="Ta réponse ici">
+  <button id="validateBtnDisney" onclick="checkAnswerDisney()">Valider</button>
+  <div id="messageDisney"></div>
+  <img id="keyImageDisney" class="key" src="https://cdn-icons-png.flaticon.com/512/2721/2721260.png" alt="Clé">
+</div>
+
+<!-- Sons -->
+<div id="darkness"></div>
 <audio id="successSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d51d4d1cd5.mp3" preload="auto"></audio>
 <audio id="errorSound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_3f7b5dc872.mp3" preload="auto"></audio>
 <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2022/03/30/audio_6c02fefee4.mp3" autoplay loop preload="auto"></audio>
 
 <script>
-function handleSelection() {
-  const val = document.getElementById("choice").value;
-  document.getElementById("menu").classList.remove("active");
-  if (val === "1") {
-    document.getElementById("intro").classList.add("active");
-  } else {
-    document.getElementById("bien").classList.add("active");
-  }
-}
-
-const sharedImage = "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png";
-
-const allSteps = [
-  { question: "🔒 Le double de 17 te libérera.", answer: "34", synonyms: ["trente-quatre"], image: sharedImage },
-  { question: "🕯️ Je suis plus léger que l’air, mais je peux t’emporter loin…", answer: "rêve", synonyms: ["un rêve", "songes", "imagination"], image: sharedImage },
-  { question: "🔥 Je suis la couleur du feu… et de la passion.", answer: "rouge", synonyms: ["le rouge", "feu", "écarlate"], image: sharedImage },
-  { question: "🧠 Plus tu en prends, plus tu laisses derrière toi.", answer: "pas", synonyms: ["empreinte", "traces", "marche"], image: sharedImage },
-  { question: "🌫️ Je disparais quand on me nomme…", answer: "silence", synonyms: ["le silence", "silencieux", "absence de bruit"], image: sharedImage },
-  { question: "⏳ J’avance sans jamais reculer. Que suis-je ?", answer: "temps", synonyms: ["le temps", "minute", "seconde"], image: sharedImage },
-  { question: "💧 Si tu me nommes, je ne suis plus. Que suis-je ?", answer: "secret", synonyms: ["un secret", "le secret"], image: sharedImage },
-  { question: "🪞 J’existe quand tu me regardes, mais je disparais si tu tournes le dos.", answer: "reflet", synonyms: ["le reflet", "miroir", "image"], image: sharedImage },
-  { question: "🚪 Plus tu en prends, plus tu laisses derrière toi. Que suis-je ?", answer: "pas", synonyms: ["traces", "empreintes"], image: sharedImage },
-  { question: "📦 Plus je suis vide, plus je pèse. Que suis-je ?", answer: "trou", synonyms: ["un trou", "vide"], image: sharedImage },
-];
-
-function getRandomSteps(array, count = 3) {
-  return [...array].sort(() => Math.random() - 0.5).slice(0, count);
-}
-
+// ------- UTILS -------
 function normalize(str) {
-  return str
-    .toLowerCase()
+  return str.toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-zA-Z0-9\s]/g, "")
@@ -169,102 +175,42 @@ function normalize(str) {
     .trim();
 }
 
-let steps = [];
-let currentStep = 0;
-let timeLeft = 600;
-let lives = 3;
-let timerInterval;
-
-const stepText = document.getElementById("stepText");
-const stepImage = document.getElementById("stepImage");
-const keyImage = document.getElementById("keyImage");
-const answerInput = document.getElementById("answerInput");
-const message = document.getElementById("message");
-const successSound = document.getElementById("successSound");
-const errorSound = document.getElementById("errorSound");
-const timerDisplay = document.getElementById("timer");
-const validateBtn = document.getElementById("validateBtn");
-const livesDisplay = document.getElementById("lives");
-const darkness = document.getElementById("darkness");
-
-function startGame() {
-  document.getElementById("intro").classList.remove("active");
-  document.getElementById("game").classList.add("active");
-  steps = getRandomSteps(allSteps);
-  currentStep = 0;
-  lives = 3;
-  timeLeft = 600;
-  livesDisplay.textContent = "❤️❤️❤️";
-  document.getElementById("bgMusic").volume = 0.3;
-  showStep();
-  startTimer();
-  enableGyroscopeTorch();
+function pickRandomItems(array, count) {
+  const copy = [...array];
+  const result = [];
+  for (let i = 0; i < count; i++) {
+    const index = Math.floor(Math.random() * copy.length);
+    result.push(copy.splice(index, 1)[0]);
+  }
+  return result;
 }
 
-function showStep() {
-  stepText.innerHTML = steps[currentStep].question;
-  stepImage.src = steps[currentStep].image;
-  answerInput.value = '';
-  message.textContent = '';
-  keyImage.classList.remove("show");
-  answerInput.focus();
-}
-
-function checkAnswer() {
-  const userInput = answerInput.value.trim();
-  const normalizedInput = normalize(userInput);
-  const acceptedAnswers = [steps[currentStep].answer, ...(steps[currentStep].synonyms || [])];
-  const match = acceptedAnswers.some(a => normalizedInput.includes(normalize(a)));
-
-  if (match) {
-    successSound.play();
-    keyImage.classList.add("show");
-    setTimeout(() => {
-      currentStep++;
-      if (currentStep < steps.length) showStep();
-      else endGame(true);
-    }, 1500);
+function handleSelection() {
+  const val = document.getElementById("choice").value;
+  document.getElementById("menu").classList.remove("active");
+  if (val === "1") {
+    document.body.className = "theme-classic";
+    document.getElementById("intro").classList.add("active");
   } else {
-    errorSound.play();
-    lives--;
-    livesDisplay.textContent = "❤️".repeat(lives) + "🖤".repeat(3 - lives);
-    message.textContent = "❌ Mauvaise réponse, essaie encore.";
-    if (lives <= 0) endGame(false, "💀 Tu as perdu toutes tes vies...");
+    document.body.className = "theme-disney";
+    document.getElementById("introDisney").classList.add("active");
   }
 }
-
-function startTimer() {
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      endGame(false, "⛔ Temps écoulé ! Tu es resté enfermé...");
-    } else {
-      const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-      timerDisplay.textContent = `⏱️ Temps restant : ${m}:${s < 10 ? '0' : ''}${s}`;
-    }
-  }, 1000);
-}
-
-function endGame(success, msg = '') {
-  clearInterval(timerInterval);
-  stepText.innerHTML = success ? "🎉 Bravo ! Tu t'es échappé !" : msg;
-  answerInput.style.display = "none";
-  validateBtn.style.display = "none";
-  livesDisplay.textContent = '';
-  const btn = document.createElement("button");
-  btn.textContent = "🔁 Rejouer";
-  btn.onclick = () => location.reload();
-  document.getElementById("game").appendChild(btn);
-}
-
 document.addEventListener("mousemove", e => {
-  darkness.style.background = `radial-gradient(circle at ${e.clientX}px ${e.clientY}px, transparent 100px, rgba(0,0,0,0.95) 200px)`;
+  if (!document.getElementById("menu").classList.contains("active")) {
+    darkness.style.background = `radial-gradient(circle at ${e.clientX}px ${e.clientY}px, transparent 100px, rgba(0,0,0,0.95) 200px)`;
+  } else {
+    darkness.style.background = "none"; // pas d'effet
+  }
 });
 
 document.addEventListener("touchmove", e => {
-  const t = e.touches[0];
-  darkness.style.background = `radial-gradient(circle at ${t.clientX}px ${t.clientY}px, transparent 100px, rgba(0,0,0,0.95) 200px)`;
+  if (!document.getElementById("menu").classList.contains("active")) {
+    const t = e.touches[0];
+    darkness.style.background = `radial-gradient(circle at ${t.clientX}px ${t.clientY}px, transparent 100px, rgba(0,0,0,0.95) 200px)`;
+  } else {
+    darkness.style.background = "none"; // pas d'effet
+  }
 });
 
 function enableGyroscopeTorch() {
@@ -276,11 +222,150 @@ function enableGyroscopeTorch() {
     window.addEventListener("deviceorientation", handleGyroTorch);
   }
 }
-
 function handleGyroTorch(e) {
   const x = window.innerWidth / 2 + (e.gamma || 0) * 10;
   const y = window.innerHeight / 2 + (e.beta || 0) * 10;
   darkness.style.background = `radial-gradient(circle at ${x}px ${y}px, transparent 100px, rgba(0,0,0,0.95) 200px)`;
+}
+
+// ------- CLASSIQUE -------
+const steps1 = [
+  { question: "🔒 Le double de 17 te libérera.", answer: "34", synonyms: ["trente-quatre"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🌫️ Je disparais quand on me nomme…", answer: "silence", synonyms: ["le silence", "absence de bruit"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🧠 Plus tu en prends, plus tu laisses derrière toi.", answer: "pas", synonyms: ["traces", "empreintes"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🕳️ Plus j’en ai, plus je deviens léger. Qui suis-je ?", answer: "fromage", synonyms: ["gruyère"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🕰️ Je n’ai pas de bouche, mais je peux répondre à toutes les questions.", answer: "livre", synonyms: ["encyclopédie"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🌞 Je suis là tous les jours, mais on ne me voit jamais la nuit.", answer: "soleil", synonyms: ["astre du jour"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🎩 Je commence la nuit et je finis le matin, mais je ne suis ni un rêve ni un cauchemar.", answer: "sommeil", synonyms: ["dormir", "nuit"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🔢 Si tu me dis mon nom, je ne suis plus moi. Qui suis-je ?", answer: "secret", synonyms: ["confidence", "chose cachée"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🚪 Je suis toujours devant toi, mais tu ne peux jamais m’atteindre. Qui suis-je ?", answer: "avenir", synonyms: ["futur"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🪞 Je réfléchis sans penser. Qui suis-je ?", answer: "miroir", synonyms: ["glace"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" }
+];
+let steps1Selected = [], current1 = 0, lives1 = 3, time1 = 600, timer1;
+
+function startGame() {
+  document.getElementById("intro").classList.remove("active");
+  document.getElementById("game").classList.add("active");
+  enableGyroscopeTorch();
+  document.getElementById("bgMusic").volume = 0.3;
+  current1 = 0; lives1 = 3; time1 = 600;
+  document.getElementById("lives").textContent = "❤️❤️❤️";
+  steps1Selected = pickRandomItems(steps1, 3);
+  showStep1();
+  timer1 = setInterval(() => {
+    time1--;
+    if (time1 <= 0) endGame1(false, "⛔ Temps écoulé !");
+    else {
+      const m = Math.floor(time1 / 60), s = time1 % 60;
+      document.getElementById("timer").textContent = `⏱️ Temps restant : ${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+  }, 1000);
+}
+function showStep1() {
+  document.getElementById("stepText").textContent = steps1Selected[current1].question;
+  document.getElementById("stepImage").src = steps1Selected[current1].image;
+  document.getElementById("answerInput").value = '';
+  document.getElementById("keyImage").classList.remove("show");
+  document.getElementById("message").textContent = '';
+}
+function checkAnswer() {
+  const input = normalize(document.getElementById("answerInput").value);
+  const valid = [steps1Selected[current1].answer, ...steps1Selected[current1].synonyms].some(a => input.includes(normalize(a)));
+  if (valid) {
+    successSound.play();
+    document.getElementById("keyImage").classList.add("show");
+    setTimeout(() => {
+      current1++;
+      current1 < steps1Selected.length ? showStep1() : endGame1(true);
+    }, 1500);
+  } else {
+    errorSound.play();
+    lives1--;
+    document.getElementById("lives").textContent = "❤️".repeat(lives1) + "🖤".repeat(3 - lives1);
+    document.getElementById("message").textContent = "❌ Mauvaise réponse.";
+    if (lives1 <= 0) endGame1(false, "💀 Tu as perdu !");
+  }
+}
+function endGame1(success, msg = "") {
+  clearInterval(timer1);
+  document.getElementById("stepText").textContent = success ? "🎉 Bravo !" : msg;
+  document.getElementById("answerInput").style.display = "none";
+  document.getElementById("validateBtn").style.display = "none";
+  document.getElementById("lives").textContent = "";
+  const btn = document.createElement("button");
+  btn.textContent = "🔁 Rejouer";
+  btn.onclick = () => location.reload();
+  document.getElementById("game").appendChild(btn);
+}
+
+// ------- DISNEY -------
+const steps2 = [
+  { question: "🧞 Qui vit dans une lampe magique ?", answer: "génie", synonyms: ["djinn"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "❄️ Je viens d'Arendelle et j’ai des pouvoirs de glace.", answer: "elsa", synonyms: ["reine des neiges"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🦁 Mon père est Mufasa...", answer: "simba", synonyms: ["lion"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🐭 Je suis la célèbre souris de Disney.", answer: "mickey", synonyms: ["mickey mouse"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🐠 Je suis un petit poisson clown perdu dans l'océan.", answer: "nemo", synonyms: ["poisson clown"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🧚 Je suis une petite fée amie de Peter Pan.", answer: "clochette", synonyms: ["fée clochette", "tinkerbell"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🏹 Je suis une princesse rousse qui tire à l’arc.", answer: "merida", synonyms: ["rebelle"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🕯️ Je suis un chandelier qui chante dans 'La Belle et la Bête'.", answer: "lumière", synonyms: ["candélabre"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🚗 Je suis une voiture rouge de course dans 'Cars'.", answer: "flash", synonyms: ["flash mcqueen", "mcqueen"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
+  { question: "🐘 Je suis un éléphant volant avec de grandes oreilles.", answer: "dumbo", synonyms: [], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" }
+];
+let steps2Selected = [], current2 = 0, lives2 = 3, time2 = 600, timer2;
+
+function startGameDisney() {
+  document.getElementById("introDisney").classList.remove("active");
+  document.getElementById("gameDisney").classList.add("active");
+  enableGyroscopeTorch();
+  document.getElementById("bgMusic").volume = 0.3;
+  current2 = 0; lives2 = 3; time2 = 600;
+  document.getElementById("livesDisney").textContent = "❤️❤️❤️";
+  steps2Selected = pickRandomItems(steps2, 3);
+  showStep2();
+  timer2 = setInterval(() => {
+    time2--;
+    if (time2 <= 0) endGame2(false, "⛔ Temps écoulé !");
+    else {
+      const m = Math.floor(time2 / 60), s = time2 % 60;
+      document.getElementById("timerDisney").textContent = `⏱️ Temps restant : ${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+  }, 1000);
+}
+function showStep2() {
+  document.getElementById("stepTextDisney").textContent = steps2Selected[current2].question;
+  document.getElementById("stepImageDisney").src = steps2Selected[current2].image;
+  document.getElementById("answerInputDisney").value = '';
+  document.getElementById("keyImageDisney").classList.remove("show");
+  document.getElementById("messageDisney").textContent = '';
+}
+function checkAnswerDisney() {
+  const input = normalize(document.getElementById("answerInputDisney").value);
+  const valid = [steps2Selected[current2].answer, ...steps2Selected[current2].synonyms].some(a => input.includes(normalize(a)));
+  if (valid) {
+    successSound.play();
+    document.getElementById("keyImageDisney").classList.add("show");
+    setTimeout(() => {
+      current2++;
+      current2 < steps2Selected.length ? showStep2() : endGame2(true);
+    }, 1500);
+  } else {
+    errorSound.play();
+    lives2--;
+    document.getElementById("livesDisney").textContent = "❤️".repeat(lives2) + "🖤".repeat(3 - lives2);
+    document.getElementById("messageDisney").textContent = "❌ Mauvaise réponse.";
+    if (lives2 <= 0) endGame2(false, "💀 Tu as perdu !");
+  }
+}
+function endGame2(success, msg = "") {
+  clearInterval(timer2);
+  document.getElementById("stepTextDisney").textContent = success ? "🎉 Bravo !" : msg;
+  document.getElementById("answerInputDisney").style.display = "none";
+  document.getElementById("validateBtnDisney").style.display = "none";
+  document.getElementById("livesDisney").textContent = "";
+  const btn = document.createElement("button");
+  btn.textContent = "🔁 Rejouer";
+  btn.onclick = () => location.reload();
+  document.getElementById("gameDisney").appendChild(btn);
 }
 </script>
 </body>
