@@ -230,17 +230,68 @@ function handleGyroTorch(e) {
 
 // ------- CLASSIQUE -------
 const steps1 = [
-  { question: "🔒 Le double de 17 te libérera.", answer: "34", synonyms: ["trente-quatre"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🌫️ Je disparais quand on me nomme…", answer: "silence", synonyms: ["le silence", "absence de bruit"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🧠 Plus tu en prends, plus tu laisses derrière toi.", answer: "pas", synonyms: ["traces", "empreintes"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🕳️ Plus j’en ai, plus je deviens léger. Qui suis-je ?", answer: "fromage", synonyms: ["gruyère"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🕰️ Je n’ai pas de bouche, mais je peux répondre à toutes les questions.", answer: "livre", synonyms: ["encyclopédie"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🌞 Je suis là tous les jours, mais on ne me voit jamais la nuit.", answer: "soleil", synonyms: ["astre du jour"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🎩 Je commence la nuit et je finis le matin, mais je ne suis ni un rêve ni un cauchemar.", answer: "sommeil", synonyms: ["dormir", "nuit"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🔢 Si tu me dis mon nom, je ne suis plus moi. Qui suis-je ?", answer: "secret", synonyms: ["confidence", "chose cachée"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🚪 Je suis toujours devant toi, mais tu ne peux jamais m’atteindre. Qui suis-je ?", answer: "avenir", synonyms: ["futur"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🪞 Je réfléchis sans penser. Qui suis-je ?", answer: "miroir", synonyms: ["glace"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" }
-];
+  {
+    question: "🔒 Le double de 17 te libérera.",
+    answer: "34",
+    synonyms: ["trente-quatre", "trent-quatre", "trente quatre", "34."],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🌫️ Je disparais quand on me nomme…",
+    answer: "silence",
+    synonyms: ["le silence", "absence de bruit", "silance", "silense", "sileence", "le bruit", "bruit"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🧠 Plus tu en prends, plus tu laisses derrière toi.",
+    answer: "pas",
+    synonyms: ["traces", "empreintes", "trace", "pas de pas", "pas "],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🕳️ Plus j’en ai, plus je deviens léger. Qui suis-je ?",
+    answer: "fromage",
+    synonyms: ["gruyère", "froamage", "frommage", "formage", "fromage troué"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🕰️ Je n’ai pas de bouche, mais je peux répondre à toutes les questions.",
+    answer: "livre",
+    synonyms: ["encyclopédie", "livres", "livr", "bouquin", "bouquain", "boukin", "dictionnaire"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🌞 Je suis là tous les jours, mais on ne me voit jamais la nuit.",
+    answer: "soleil",
+    synonyms: ["astre du jour", "soleille", "solei", "solay", "solail"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🎩 Je commence la nuit et je finis le matin, mais je ne suis ni un rêve ni un cauchemar.",
+    answer: "sommeil",
+    synonyms: ["dormir", "nuit", "sommeille", "sommeil profond", "sommei", "sommeille"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🔢 Si tu me dis mon nom, je ne suis plus moi. Qui suis-je ?",
+    answer: "secret",
+    synonyms: ["confidence", "chose cachée", "secré", "sekret", "secrè", "secre", "secret "],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🚪 Je suis toujours devant toi, mais tu ne peux jamais m’atteindre. Qui suis-je ?",
+    answer: "avenir",
+    synonyms: ["futur", "lavenir", "avenir ", "l'avenir", "avénir", "futtur"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🪞 Je réfléchis sans penser. Qui suis-je ?",
+    answer: "miroir",
+    synonyms: ["glace", "miroire", "mirroir", "mirwa", "miroire magique", "le miroir"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  }
+]
+;
 let steps1Selected = [], current1 = 0, lives1 = 3, time1 = 600, timer1;
 
 function startGame() {
@@ -299,17 +350,68 @@ function endGame1(success, msg = "") {
 }
 
 // ------- DISNEY -------
-const steps2 = [
-  { question: "🧞 Qui vit dans une lampe magique ?", answer: "génie", synonyms: ["djinn"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "❄️ Je viens d'Arendelle et j’ai des pouvoirs de glace.", answer: "elsa", synonyms: ["reine des neiges"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🦁 Mon père est Mufasa...", answer: "simba", synonyms: ["lion"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🐭 Je suis la célèbre souris de Disney.", answer: "mickey", synonyms: ["mickey mouse"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🐠 Je suis un petit poisson clown perdu dans l'océan.", answer: "nemo", synonyms: ["poisson clown"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🧚 Je suis une petite fée amie de Peter Pan.", answer: "clochette", synonyms: ["fée clochette", "tinkerbell"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🏹 Je suis une princesse rousse qui tire à l’arc.", answer: "merida", synonyms: ["rebelle"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🕯️ Je suis un chandelier qui chante dans 'La Belle et la Bête'.", answer: "lumière", synonyms: ["candélabre"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🚗 Je suis une voiture rouge de course dans 'Cars'.", answer: "flash", synonyms: ["flash mcqueen", "mcqueen"], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" },
-  { question: "🐘 Je suis un éléphant volant avec de grandes oreilles.", answer: "dumbo", synonyms: [], image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png" }
+const steps2 = [[
+  {
+    question: "🧞 Qui vit dans une lampe magique ?",
+    answer: "génie",
+    synonyms: ["djinn", "genie", "génis", "jenie", "jeanie", "jinni", "le génie", "le djinn"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "❄️ Je viens d'Arendelle et j’ai des pouvoirs de glace.",
+    answer: "elsa",
+    synonyms: ["reine des neiges", "elza", "elsah", "elsaa", "la reine des neiges", "elssa", "aelsa"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🦁 Mon père est Mufasa...",
+    answer: "simba",
+    synonyms: ["lion", "simbaa", "simbah", "le lion", "simbba", "symba"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🐭 Je suis la célèbre souris de Disney.",
+    answer: "mickey",
+    synonyms: ["mickey mouse", "mickey maus", "miky", "mické", "miki", "micki", "la souris", "mickei"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🐠 Je suis un petit poisson clown perdu dans l'océan.",
+    answer: "nemo",
+    synonyms: ["poisson clown", "nemmo", "némo", "némo le poisson", "memo", "le poisson", "nemo "],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🧚 Je suis une petite fée amie de Peter Pan.",
+    answer: "clochette",
+    synonyms: ["fée clochette", "tinkerbell", "clochet", "clochet", "clochete", "fée", "clochette la fée", "tink"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🏹 Je suis une princesse rousse qui tire à l’arc.",
+    answer: "merida",
+    synonyms: ["rebelle", "mérida", "meridda", "meridah", "la rousse", "princesse rebelle"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🕯️ Je suis un chandelier qui chante dans 'La Belle et la Bête'.",
+    answer: "lumière",
+    synonyms: ["candélabre", "lumiere", "lumiér", "le chandelier", "lumièr", "candelabre", "le bougeoir", "le luminaire"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🚗 Je suis une voiture rouge de course dans 'Cars'.",
+    answer: "flash",
+    synonyms: ["flash mcqueen", "mcqueen", "flash macouine", "flash makwin", "flach", "flashe", "flash mcwin", "voiture rouge"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  },
+  {
+    question: "🐘 Je suis un éléphant volant avec de grandes oreilles.",
+    answer: "dumbo",
+    synonyms: ["dumbo", "dumboo", "dumboo", "dambot", "dumbo l'éléphant", "l'éléphant", "éléphant volant", "éléfan"],
+    image: "https://cdn.pixabay.com/photo/2021/06/06/06/24/lock-6314371_1280.png"
+  }
+]
 ];
 let steps2Selected = [], current2 = 0, lives2 = 3, time2 = 600, timer2;
 
