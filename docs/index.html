@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escape Game - Devinettes</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat black;
+      color: white;
+      overflow-x: hidden;
+      font-size: 16px;
+    }
+
+    #intro, #game {
+      padding: 5vw;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    #intro {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      z-index: 10;
+    }
+
+    #intro h1 {
+      font-size: clamp(24px, 6vw, 36px);
+      margin-bottom: 1em;
+    }
+
+    #intro p {
+      max-width: 90%;
+      font-size: clamp(14px, 4.5vw, 20px);
+      margin-bottom: 1.5em;
+    }
+
+    #intro button,
+    #validateBtn {
+      font-size: clamp(16px, 4.5vw, 22px);
+      padding: 0.6em 1.2em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #fff;
+      color: #000;
+      margin-top: 1em;
+    }
+
+    #game {
+      display: none;
+      background: rgba(20, 20, 20, 0.95);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+
+    #lives {
+      font-size: clamp(20px, 6vw, 30px);
+      margin-bottom: 10px;
+    }
+
+    #timer {
+      margin-bottom: 1em;
+      font-weight: bold;
+    }
+
+    .step-image {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 1em;
+      object-fit: cover;
+    }
+
+    input[type="text"] {
+      font-size: 16px;
+      padding: 0.5em;
+      width: 90%;
+      margin: 0 auto 1em auto;
+      display: block;
+      border-radius: 6px;
+      border: none;
+      text-align: center;
+    }
+
+    #message {
+      margin-top: 1em;
+      font-weight: bold;
+    }
+
+    .key {
+      width: 60px;
+      display: none;
+      margin-top: 10px;
+      animation: fadeIn 1s ease;
+    }
+
+    .show {
+      display: inline-block !important;
+    }
+
+    #darkness {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, transparent 100px, rgba(0,0,0,0.95) 200px);
+      transition: background 0.2s ease-out;
+      z-index: 5;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.5); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+<div id="intro">
+  <h1>Évasion Nocturne</h1>
+  <p>Tu te réveilles dans une pièce obscure. Trois énigmes gardent la sortie. Si tu ne les résous pas en 2 minutes... tu restes ici pour toujours.</p>
+  <button onclick="startGame()">Commencer</button>
+</div>
+
+<div id="darkness"></div>
+
+<div id="game">
+  <h2>Escape Game : Devinettes</h2>
+  <div id="lives">❤️❤️❤️</div>
+  <div id="timer">⏱️ Temps restant : 2:00</div>
+  <img id="stepImage" class="step-image" src="" alt="Image énigme">
+  <div id="stepText"></div>
+  <input type="text" id="answerInput" placeholder="Ta réponse ici">
+  <button id="validateBtn" onclick="checkAnswer()">Valider</button>
+  <div id="message"></div>
+  <img id="keyImage" class="key" src="https://cdn-icons-png.flaticon.com/512/2721/2721260.png" alt="Clé">
+</div>
+
+<audio id="successSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d51d4d1cd5.mp3" preload="auto"></audio>
+<audio id="errorSound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_3f7b5dc872.mp3" preload="auto"></audio>
+<audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2023/04/06/audio_149a9f31aa.mp3" autoplay loop></audio>
+
+<script>
+  const allSteps = [
+    {
+      question: "🔒 Tu trouves un cadenas rouillé avec une note : « Le double de 17 te libérera ». Que tapes-tu ?",
+      answer: "34",
+      image: "https://cdn.pixabay.com/photo/2018/03/02/20/20/door-3194370_960_720.jpg"
+    },
+    {
+      question: "🕯️ Une chandelle vacille. Un murmure dit : « Je suis plus léger que l’air, mais je peux t’emporter loin… »",
+      answer: "rêve",
+      image: "https://cdn.pixabay.com/photo/2015/09/18/19/03/sky-944868_960_720.jpg"
+    },
+    {
+      question: "🔥 Une porte rouge dit : « Je suis la couleur du feu… et de la passion. »",
+      answer: "rouge",
+      image: "https://cdn.pixabay.com/photo/2016/11/29/06/18/door-1866603_960_720.jpg"
+    }
+  ];
+
+  const ambientTexts = [
+    "Une ombre traverse la pièce…",
+    "Un souffle glacial se fait sentir…",
+    "Un craquement se fait entendre derrière toi…",
+    "La lumière vacille un instant…"
+  ];
+
+  function getRandomSteps(all, count = 3) {
+    return all.sort(() => 0.5 - Math.random()).slice(0, count);
+  }
+
+  const steps = getRandomSteps(allSteps);
+  let currentStep = 0;
+  let timeLeft = 120;
+  let lives = 3;
+  let timerInterval;
+
+  const stepText = document.getElementById("stepText");
+  const stepImage = document.getElementById("stepImage");
+  const keyImage = document.getElementById("keyImage");
+  const answerInput = document.getElementById("answerInput");
+  const message = document.getElementById("message");
+  const successSound = document.getElementById("successSound");
+  const errorSound = document.getElementById("errorSound");
+  const timerDisplay = document.getElementById("timer");
+  const validateBtn = document.getElementById("validateBtn");
+  const livesDisplay = document.getElementById("lives");
+  const darkness = document.getElementById("darkness");
+
+  function startGame() {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("game").style.display = "block";
+    document.getElementById("bgMusic").volume = 0.3;
+    showStep();
+    startTimer();
+    enableGyroscopeTorch(); // ← active le gyroscope
+  }
+
+  function showStep() {
+    const ambient = ambientTexts[Math.floor(Math.random() * ambientTexts.length)];
+    stepText.innerHTML = `<em>${ambient}</em><br><br>${steps[currentStep].question}`;
+    stepImage.src = steps[currentStep].image;
+    answerInput.value = '';
+    message.textContent = '';
+    keyImage.classList.remove("show");
+    answerInput.focus();
+  }
+
+  function checkAnswer() {
+    const userInput = answerInput.value.trim().toLowerCase();
+    const correctAnswer = steps[currentStep].answer.toLowerCase();
+
+    if (userInput === correctAnswer) {
+      successSound.play();
+      keyImage.classList.add("show");
+
+      setTimeout(() => {
+        currentStep++;
+        if (currentStep < steps.length) {
+          showStep();
+        } else {
+          clearInterval(timerInterval);
+          endGame(true);
+        }
+      }, 1500);
+    } else {
+      errorSound.play();
+      lives--;
+      livesDisplay.textContent = "❤️".repeat(lives) + "🖤".repeat(3 - lives);
+      message.textContent = "❌ Mauvaise réponse, essaie encore.";
+
+      if (lives <= 0) {
+        clearInterval(timerInterval);
+        endGame(false, "💀 Tu as perdu toutes tes vies...");
+      }
+    }
+  }
+
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        endGame(false, "⛔ Temps écoulé ! Tu es resté enfermé...");
+      } else {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerDisplay.textContent = `⏱️ Temps restant : ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      }
+    }, 1000);
+  }
+
+  function endGame(success, messageText = "") {
+    stepImage.src = success
+      ? "https://cdn.pixabay.com/photo/2021/07/14/23/10/door-6467922_960_720.jpg"
+      : stepImage.src;
+
+    stepText.innerHTML = success ? "🎉 Bravo ! Tu t'es échappé !" : messageText;
+    answerInput.style.display = "none";
+    validateBtn.style.display = "none";
+    livesDisplay.textContent = '';
+    showReplayButton();
+  }
+
+  answerInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") checkAnswer();
+  });
+
+  function showReplayButton() {
+    const replayBtn = document.createElement("button");
+    replayBtn.textContent = "🔁 Rejouer";
+    replayBtn.onclick = () => location.reload();
+    document.getElementById("game").appendChild(replayBtn);
+  }
+
+  // Lampe torche souris (desktop)
+  document.addEventListener("mousemove", function(e) {
+    darkness.style.background = `radial-gradient(circle at ${e.clientX}px ${e.clientY}px, transparent 100px, rgba(0,0,0,0.95) 200px)`;
+  });
+
+  // Lampe torche tactile (mobile)
+  document.addEventListener("touchmove", function(e) {
+    const touch = e.touches[0];
+    darkness.style.background = `radial-gradient(circle at ${touch.clientX}px ${touch.clientY}px, transparent 100px, rgba(0,0,0,0.95) 200px)`;
+  });
+
+  // Lampe torche gyroscope
+  function enableGyroscopeTorch() {
+    if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+      // iOS (nécessite une autorisation utilisateur)
+      DeviceOrientationEvent.requestPermission()
+        .then(permissionState => {
+          if (permissionState === "granted") {
+            window.addEventListener("deviceorientation", handleGyroTorch);
+          }
+        })
+        .catch(console.error);
+    } else {
+      // Android
+      window.addEventListener("deviceorientation", handleGyroTorch);
+    }
+  }
+
+  function handleGyroTorch(event) {
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    const gamma = event.gamma || 0; // gauche/droite
+    const beta = event.beta || 0;   // avant/arrière
+
+    const x = centerX + gamma * 10;
+    const y = centerY + beta * 10;
+
+    darkness.style.background = `radial-gradient(circle at ${x}px ${y}px, transparent 100px, rgba(0,0,0,0.95) 200px)`;
+  }
+</script>
+</body>
+</html>
